@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: yml_header_path_rewrite_route
+        uri: http://httpbin.org
+        predicates:
+        - Header=X-Request-Id, \d+
+        - Path=/self/**
+        filters:
+        - RewritePath=/self/?(?<segment>.*), /$\{segment}
+      #- id: yml_path_rewrite_apiversion_route
+      #  uri: http://httpbin.org
+      #  predicates:
+      #  - Path=/version/**
+      #  filters:
+      #  - RewritePath=/version/?(?<segment>.*), /$\{segment}
+      #  - name: ApiVersionValidationFilter
+      #    args:
+      #      headerName: ApiVersion
