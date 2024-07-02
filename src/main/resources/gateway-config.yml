@@ -9,12 +9,22 @@ spring:
         - Path=/self/**
         filters:
         - RewritePath=/self/?(?<segment>.*), /$\{segment}
-      #- id: yml_path_rewrite_apiversion_route
-      #  uri: http://httpbin.org
-      #  predicates:
-      #  - Path=/version/**
-      #  filters:
-      #  - RewritePath=/version/?(?<segment>.*), /$\{segment}
-      #  - name: ApiVersionValidationFilter
-      #    args:
-      #      headerName: ApiVersion
+      - id: yml_example_route
+        uri: http://httpbin.org
+        predicates:
+          - Path=/example/**
+        filters:
+          - RewritePath=/example/?(?<segment>.*), /$\{segment}
+          - name: LoggingRequest
+            args:
+              baseMessage: "Request to example route"
+              details: true
+      - id: yml_path_rewrite_apiversion_route
+        uri: http://httpbin.org
+        predicates:
+        - Path=/v1/**
+        filters:
+        - RewritePath=/v1/?(?<segment>.*), /$\{segment}
+        - name: ApiVersionValidation
+          args:
+            headerName: ApiVersion

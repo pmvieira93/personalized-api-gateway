@@ -1,15 +1,23 @@
 package com.github.pmvieira93.gateway.infrastructure;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ApiVersionValidationFilterFactory extends
-        AbstractGatewayFilterFactory<ApiVersionValidationFilterFactory.Config> {
+public class ApiVersionValidationGatewayFilterFactory extends
+        AbstractGatewayFilterFactory<ApiVersionValidationGatewayFilterFactory.Config> {
 
-    public ApiVersionValidationFilterFactory() {
+    public ApiVersionValidationGatewayFilterFactory() {
         super(Config.class);
+    }
+
+    @Override
+    public List<String> shortcutFieldOrder() {
+        return Arrays.asList("headerName");
     }
 
     @Override

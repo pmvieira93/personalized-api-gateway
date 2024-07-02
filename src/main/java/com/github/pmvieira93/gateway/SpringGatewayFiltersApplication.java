@@ -1,17 +1,22 @@
 package com.github.pmvieira93.gateway;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import com.github.pmvieira93.gateway.infrastructure.ApiVersionValidationFilterFactory;
-import com.github.pmvieira93.gateway.infrastructure.ApiVersionValidationFilterFactory.Config;
+import com.github.pmvieira93.gateway.infrastructure.ApiVersionValidationGatewayFilterFactory;
+import com.github.pmvieira93.gateway.infrastructure.ApiVersionValidationGatewayFilterFactory.Config;
 
 //@ComponentScan(basePackages = "com.github.pmvieira93.infrastructure")
 @SpringBootApplication
 public class SpringGatewayFiltersApplication {
+
+	@Autowired
+	private ApplicationContext ctx;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringGatewayFiltersApplication.class, args);
@@ -19,7 +24,7 @@ public class SpringGatewayFiltersApplication {
 
 	@Bean
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-			ApiVersionValidationFilterFactory apiVersionValidationFilterFactory) {
+			ApiVersionValidationGatewayFilterFactory apiVersionValidationFilterFactory) {
 		return builder.routes()
 				.route("code_path_route", r -> r.path("/get")
 						.uri("http://httpbin.org"))

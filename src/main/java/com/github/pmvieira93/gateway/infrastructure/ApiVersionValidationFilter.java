@@ -22,7 +22,7 @@ public class ApiVersionValidationFilter implements GatewayFilter {
 
     static final Logger logger = Logger.getLogger(ApiVersionValidationFilter.class);
 
-    ApiVersionValidationFilterFactory.Config args;
+    ApiVersionValidationGatewayFilterFactory.Config args;
 
     private static final Double versionGreaterThan = 3.11D;
 
