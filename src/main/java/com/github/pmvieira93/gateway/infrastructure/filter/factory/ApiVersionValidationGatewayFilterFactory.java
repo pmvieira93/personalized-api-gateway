@@ -1,4 +1,4 @@
-package com.github.pmvieira93.gateway.infrastructure;
+package com.github.pmvieira93.gateway.infrastructure.filter.factory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.stereotype.Component;
+
+import com.github.pmvieira93.gateway.infrastructure.filter.ApiVersionValidationFilter;
 
 @Component
 public class ApiVersionValidationGatewayFilterFactory extends
@@ -22,7 +24,7 @@ public class ApiVersionValidationGatewayFilterFactory extends
 
     @Override
     public GatewayFilter apply(Config config) {
-        return new ApiVersionValidationFilter();
+        return new ApiVersionValidationFilter(config);
     }
 
     public static class Config {

@@ -1,4 +1,4 @@
-package com.github.pmvieira93.gateway.infrastructure;
+package com.github.pmvieira93.gateway.infrastructure.filter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
+
+import com.github.pmvieira93.gateway.infrastructure.filter.factory.ApiVersionValidationGatewayFilterFactory;
 
 import reactor.core.publisher.Mono;
 
@@ -29,15 +31,16 @@ public class ApiVersionValidationFilter implements GatewayFilter {
     public ApiVersionValidationFilter() {
     }
 
-    // public ApiVersionValidationFilter(ApiVersionValidationFilterFactory.Config
-    // args) {
-    // this.args = args;
-    // }
+    public ApiVersionValidationFilter(ApiVersionValidationGatewayFilterFactory.Config args) {
+        this.args = args;
+    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String headerValue = exchange.getRequest().getHeaders().getFirst(DEFAULT_HEADER);
-        logger.debug("Header value: " + headerValue);
+        String headerKey = exchange.getRequest().getHeaders().containsKey(args.getHeaderName()) ? args.getHeaderName()
+                : DEFAULT_HEADER;
+        String headerValue = exchange.getRequest().getHeaders().getFirst(headerKey);
+        logger.debug("Header key|value: " + headerKey + "|" + headerValue);
         Mono<Boolean> result = validateApiVersion(headerValue);
         return result.flatMap(isValid -> {
             if (isValid) {

@@ -1,3 +1,6 @@
+#
+# Gateway Routes Configurations
+#
 spring:
   cloud:
     gateway:

@@ -1,4 +1,4 @@
-package com.github.pmvieira93.gateway.infrastructure;
+package com.github.pmvieira93.gateway.infrastructure.batch;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;

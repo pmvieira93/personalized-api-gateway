@@ -1,4 +1,4 @@
-package com.github.pmvieira93.gateway.infrastructure;
+package com.github.pmvieira93.gateway.infrastructure.filter;
 
 import java.time.Instant;
 import java.util.Arrays;

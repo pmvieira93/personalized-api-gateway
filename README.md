@@ -47,11 +47,17 @@ curl -v 'http://localhost:8080/version/ip' -H 'api-version: 1.5.0'
 ```
 
 ```bash
-# Test Route: 'yml_path_rewrite_apiversion_route'
+# Test Route: 'yml_path_rewrite_apiversion_route' (Default Header)
 #   > Expected: 200
 curl -v 'http://localhost:8080/v1/ip' -H 'api-version: 4.5.0'
 #   > Expected: 403
 curl -v 'http://localhost:8080/v1/ip' -H 'api-version: 1.5.0'
+
+# Test Route: 'yml_path_rewrite_apiversion_route' (Configured Header)
+#   > Expected: 200
+curl -v 'http://localhost:8080/v1/ip' -H 'ApiVersion: 4.5.0'
+#   > Expected: 403
+curl -v 'http://localhost:8080/v1/ip' -H 'ApiVersion: 1.5.0'
 ```
 
 **LoggingRequest**
