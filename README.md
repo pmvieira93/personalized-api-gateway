@@ -17,6 +17,10 @@ Compile Application
 
 `mvnw verify`
 
+Running specific test class
+
+`mvnw -Dtest=RouteGatewayFilterIntegrationTest test`
+
 ### Manually Tests
 
 Testing Routes using default Predicates/Filters
