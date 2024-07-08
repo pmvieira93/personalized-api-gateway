@@ -38,3 +38,21 @@ spring:
         filters:
         - RewritePath=/v2/?(?<segment>.*), /$\{segment}
         - ApiVersionValidation=X-Api-Version
+
+      - id: yml_path_rewrite_apiversion_route_v2
+        uri: http://httpbin.org
+        predicates:
+        - Path=/v1_2/**
+        filters:
+        - RewritePath=/v1_2/?(?<segment>.*), /$\{segment}
+        - name: ApiVersionValidationV2
+          args:
+            headerName: ApiVersion
+            returnStatus: 401
+      - id: yml_path_rewrite_apiversion2_route_v2
+        uri: http://httpbin.org
+        predicates:
+        - Path=/v2_2/**
+        filters:
+        - RewritePath=/v2_2/?(?<segment>.*), /$\{segment}
+        - ApiVersionValidationV2=X-Api-Version, 403 

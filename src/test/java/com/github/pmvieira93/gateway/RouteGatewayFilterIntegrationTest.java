@@ -205,4 +205,185 @@ public class RouteGatewayFilterIntegrationTest {
         }
     }
 
+
+    @Nested
+    class ConfigVersion3 {
+
+        @Test
+        void givenARouteWithFilter_whenRequestingRoute_thenFilterIsApplied() {
+            // Given
+            System.out.println("LOCAL SERVER PORT: " + LOCAL_SERVER_PORT);
+            Pattern pattern = Pattern.compile(RESPONSE_PATTERN, Pattern.MULTILINE | Pattern.COMMENTS | Pattern.DOTALL);
+
+            // When
+            ValidatableResponse response = given()
+                    .baseUri(BASE_URL)
+                    .port(LOCAL_SERVER_PORT)
+                    .when()
+                    .header("ApiVersion", "4.5.0")
+                    .get("/v1_2/ip")
+                    .then()
+                    .statusCode(200);
+
+            // Then
+            assertNotNull(response);
+            String body = response.extract().body().asString();
+            assertNotNull(body);
+            System.out.println(body);
+            assertTrue(pattern.matcher(body).matches());
+        }
+
+        @Test
+        void givenARouteWithFilter_whenRequestingRouteWithDefaultHeader_thenFilterIsApplied() {
+            // Given
+            System.out.println("LOCAL SERVER PORT: " + LOCAL_SERVER_PORT);
+            Pattern pattern = Pattern.compile(RESPONSE_PATTERN, Pattern.MULTILINE | Pattern.COMMENTS | Pattern.DOTALL);
+
+            // When
+            ValidatableResponse response = given()
+                    .baseUri(BASE_URL)
+                    .port(LOCAL_SERVER_PORT)
+                    .when()
+                    .header("api-version", "4.5.0")
+                    .get("/v1_2/ip")
+                    .then()
+                    .statusCode(200);
+
+            // Then
+            assertNotNull(response);
+            String body = response.extract().body().asString();
+            assertNotNull(body);
+            System.out.println(body);
+            assertTrue(pattern.matcher(body).matches());
+        }
+
+        @Test
+        void givenARouteWithFilter_whenRequestingRouteWithInvalidVersion_thenReturn403() {
+            // Given
+            System.out.println("LOCAL SERVER PORT: " + LOCAL_SERVER_PORT);
+
+            // When
+            ValidatableResponse response = given()
+                    .baseUri(BASE_URL)
+                    .port(LOCAL_SERVER_PORT)
+                    .when()
+                    .header("ApiVersion", "1.5.0")
+                    .get("/v1_2/ip")
+                    .then()
+                    .statusCode(401);
+
+            // Then
+            assertNotNull(response);
+        }
+
+        @Test
+        void givenARouteWithFilter_whenRequestingRouteWithUnknownHeader_thenReturn404() {
+            // Given
+            System.out.println("LOCAL SERVER PORT: " + LOCAL_SERVER_PORT);
+
+            // When
+            ValidatableResponse response = given()
+                    .baseUri(BASE_URL)
+                    .port(LOCAL_SERVER_PORT)
+                    .when()
+                    .header("xyz", "1.5.0")
+                    .get("/v1_2/ip")
+                    .then()
+                    .statusCode(404);
+
+            // Then
+            assertNotNull(response);
+        }
+    }
+
+    @Nested
+    class ConfigVersion4 {
+        
+        @Test
+        void givenARouteWithFilter_whenRequestingRoute_thenFilterIsApplied() {
+            // Given
+            System.out.println("LOCAL SERVER PORT: " + LOCAL_SERVER_PORT);
+            Pattern pattern = Pattern.compile(RESPONSE_PATTERN, Pattern.MULTILINE | Pattern.COMMENTS | Pattern.DOTALL);
+
+            // When
+            ValidatableResponse response = given()
+                    .baseUri(BASE_URL)
+                    .port(LOCAL_SERVER_PORT)
+                    .when()
+                    .header("X-Api-Version", "4.5.0")
+                    .get("/v2_2/ip")
+                    .then()
+                    .statusCode(200);
+
+            // Then
+            assertNotNull(response);
+            String body = response.extract().body().asString();
+            assertNotNull(body);
+            System.out.println(body);
+            assertTrue(pattern.matcher(body).matches());
+        }
+
+        @Test
+        void givenARouteWithFilter_whenRequestingRouteWithDefaultHeader_thenFilterIsApplied() {
+            // Given
+            System.out.println("LOCAL SERVER PORT: " + LOCAL_SERVER_PORT);
+            Pattern pattern = Pattern.compile(RESPONSE_PATTERN, Pattern.MULTILINE | Pattern.COMMENTS | Pattern.DOTALL);
+
+            // When
+            ValidatableResponse response = given()
+                    .baseUri(BASE_URL)
+                    .port(LOCAL_SERVER_PORT)
+                    .when()
+                    .header("api-version", "4.5.0")
+                    .get("/v2_2/ip")
+                    .then()
+                    .statusCode(200);
+
+            // Then
+            assertNotNull(response);
+            String body = response.extract().body().asString();
+            assertNotNull(body);
+            System.out.println(body);
+            assertTrue(pattern.matcher(body).matches());
+        }
+
+        @Test
+        void givenARouteWithFilter_whenRequestingRouteWithInvalidVersion_thenReturn403() {
+            // Given
+            System.out.println("LOCAL SERVER PORT: " + LOCAL_SERVER_PORT);
+
+            // When
+            ValidatableResponse response = given()
+                    .baseUri(BASE_URL)
+                    .port(LOCAL_SERVER_PORT)
+                    .when()
+                    .header("X-Api-Version", "1.5.0")
+                    .get("/v2_2/ip")
+                    .then()
+                    .statusCode(403);
+
+            // Then
+            assertNotNull(response);
+        }
+
+        @Test
+        void givenARouteWithFilter_whenRequestingRouteWithUnknownHeader_thenReturn404() {
+            // Given
+            System.out.println("LOCAL SERVER PORT: " + LOCAL_SERVER_PORT);
+
+            // When
+            ValidatableResponse response = given()
+                    .baseUri(BASE_URL)
+                    .port(LOCAL_SERVER_PORT)
+                    .when()
+                    .header("xyz", "1.5.0")
+                    .get("/v2_2/ip")
+                    .then()
+                    .statusCode(404);
+
+            // Then
+            assertNotNull(response);
+        }
+    }
+
 }
