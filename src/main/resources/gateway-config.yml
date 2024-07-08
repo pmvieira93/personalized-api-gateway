@@ -31,3 +31,10 @@ spring:
         - name: ApiVersionValidation
           args:
             headerName: ApiVersion
+      - id: yml_path_rewrite_apiversion2_route
+        uri: http://httpbin.org
+        predicates:
+        - Path=/v2/**
+        filters:
+        - RewritePath=/v2/?(?<segment>.*), /$\{segment}
+        - ApiVersionValidation=X-Api-Version

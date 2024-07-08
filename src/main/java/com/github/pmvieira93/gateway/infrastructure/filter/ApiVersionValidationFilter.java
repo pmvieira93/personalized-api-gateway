@@ -1,5 +1,6 @@
 package com.github.pmvieira93.gateway.infrastructure.filter;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +42,9 @@ public class ApiVersionValidationFilter implements GatewayFilter {
                 : DEFAULT_HEADER;
         String headerValue = exchange.getRequest().getHeaders().getFirst(headerKey);
         logger.debug("Header key|value: " + headerKey + "|" + headerValue);
+        if(Objects.isNull(headerValue)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         Mono<Boolean> result = validateApiVersion(headerValue);
         return result.flatMap(isValid -> {
             if (isValid) {
