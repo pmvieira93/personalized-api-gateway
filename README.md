@@ -17,6 +17,10 @@ Compile Application
 
 `mvnw verify`
 
+Running all tests
+
+`mvnw test`
+
 Running specific test class
 
 `mvnw -Dtest=RouteGatewayFilterIntegrationTest test`

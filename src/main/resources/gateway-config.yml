@@ -5,24 +5,26 @@ spring:
   cloud:
     gateway:
       routes:
-      - id: yml_header_path_rewrite_route
+      - id: httpbin_self_route
         uri: http://httpbin.org
         predicates:
         - Header=X-Request-Id, \d+
         - Path=/self/**
         filters:
         - RewritePath=/self/?(?<segment>.*), /$\{segment}
-      - id: yml_example_route
+      
+      - id: httpbin_logging_route
         uri: http://httpbin.org
         predicates:
-          - Path=/example/**
+          - Path=/logging/**
         filters:
-          - RewritePath=/example/?(?<segment>.*), /$\{segment}
+          - RewritePath=/logging/?(?<segment>.*), /$\{segment}
           - name: LoggingRequest
             args:
               baseMessage: "Request to example route"
               details: true
-      - id: yml_path_rewrite_apiversion_route
+      
+      - id: httpbin_apiversionfilter_v1_route
         uri: http://httpbin.org
         predicates:
         - Path=/v1/**
@@ -31,7 +33,8 @@ spring:
         - name: ApiVersionValidation
           args:
             headerName: ApiVersion
-      - id: yml_path_rewrite_apiversion2_route
+      
+      - id: httpbin_apiversionfilter_v2_route
         uri: http://httpbin.org
         predicates:
         - Path=/v2/**
@@ -39,7 +42,7 @@ spring:
         - RewritePath=/v2/?(?<segment>.*), /$\{segment}
         - ApiVersionValidation=X-Api-Version
 
-      - id: yml_path_rewrite_apiversion_route_v2
+      - id: httpbin_apiversionfilterv2_v1_route
         uri: http://httpbin.org
         predicates:
         - Path=/v1_2/**
@@ -49,7 +52,8 @@ spring:
           args:
             headerName: ApiVersion
             returnStatus: 401
-      - id: yml_path_rewrite_apiversion2_route_v2
+      
+      - id: httpbin_apiversionfilterv2_v2_route
         uri: http://httpbin.org
         predicates:
         - Path=/v2_2/**
