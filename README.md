@@ -55,25 +55,25 @@ curl -v 'http://localhost:8080/version/ip' -H 'api-version: 1.5.0'
 ```
 
 ```bash
-# Test Route: 'yml_path_rewrite_apiversion_route' (Default Header)
+# Test Route: 'httpbin_apiversionfilter_v1_route' (Default Header)
 #   > Expected: 200
 curl -v 'http://localhost:8080/v1/ip' -H 'api-version: 4.5.0'
 #   > Expected: 403
 curl -v 'http://localhost:8080/v1/ip' -H 'api-version: 1.5.0'
 
-# Test Route: 'yml_path_rewrite_apiversion_route' (Configured Header)
+# Test Route: 'httpbin_apiversionfilter_v1_route' (Configured Header)
 #   > Expected: 200
 curl -v 'http://localhost:8080/v1/ip' -H 'ApiVersion: 4.5.0'
 #   > Expected: 403
 curl -v 'http://localhost:8080/v1/ip' -H 'ApiVersion: 1.5.0'
 ```
 
-**LoggingRequest**
+**TraceRequest**
 
 ```bash
-# Test Route: 'yml_example_route'
+# Test Route: 'httpbin_trace_route'
 #   > Expected: 200
-curl -v 'http://localhost:8080/example/ip' -H 'dummy: example'
+curl -v 'http://localhost:8080/trace/ip' -H 'dummy: trace'
 ```
 
 ## References

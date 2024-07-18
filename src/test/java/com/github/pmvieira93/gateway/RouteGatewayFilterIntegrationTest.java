@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 
+import io.restassured.http.Headers;
 import io.restassured.response.ValidatableResponse;
 
 @Import(TestcontainersConfiguration.class)
@@ -26,7 +27,7 @@ public class RouteGatewayFilterIntegrationTest {
     static final String BASE_URL = "http://localhost";
 
     @Nested
-    class ConfigVersion1 {
+    class ConfigWithApiValidationSeries1 {
 
         @Test
         void givenARouteWithFilter_whenRequestingRoute_thenFilterIsApplied() {
@@ -116,8 +117,8 @@ public class RouteGatewayFilterIntegrationTest {
     }
 
     @Nested
-    class ConfigVersion2 {
-        
+    class ConfigWithApiValidationSeries2 {
+
         @Test
         void givenARouteWithFilter_whenRequestingRoute_thenFilterIsApplied() {
             // Given
@@ -205,9 +206,8 @@ public class RouteGatewayFilterIntegrationTest {
         }
     }
 
-
     @Nested
-    class ConfigVersion3 {
+    class ConfigWithApiValidationV2Series1 {
 
         @Test
         void givenARouteWithFilter_whenRequestingRoute_thenFilterIsApplied() {
@@ -297,8 +297,8 @@ public class RouteGatewayFilterIntegrationTest {
     }
 
     @Nested
-    class ConfigVersion4 {
-        
+    class ConfigWithApiValidationV2Series2 {
+
         @Test
         void givenARouteWithFilter_whenRequestingRoute_thenFilterIsApplied() {
             // Given
@@ -383,6 +383,38 @@ public class RouteGatewayFilterIntegrationTest {
 
             // Then
             assertNotNull(response);
+        }
+    }
+
+    @Nested
+    class ConfigWithTraceRequest {
+
+        @Test
+        void givenARouteWithFilter_whenRequestingRoute_thenFilterIsApplied() {
+            // Given
+            System.out.println("LOCAL SERVER PORT: " + LOCAL_SERVER_PORT);
+            Pattern pattern = Pattern.compile(RESPONSE_PATTERN, Pattern.MULTILINE | Pattern.COMMENTS | Pattern.DOTALL);
+
+            // When
+            ValidatableResponse response = given()
+                    .baseUri(BASE_URL)
+                    .port(LOCAL_SERVER_PORT)
+                    .when()
+                    .header("dummy", "trace")
+                    .get("/trace/ip")
+                    .then()
+                    .statusCode(200);
+
+            // Then
+            assertNotNull(response);
+            String body = response.extract().body().asString();
+            assertNotNull(body);
+            System.out.println(body);
+            assertTrue(pattern.matcher(body).matches());
+            Headers headers = response.extract().headers();
+            assertNotNull(headers);
+            assertTrue(headers.hasHeaderWithName("X-Request-Id"));
+            assertTrue(headers.hasHeaderWithName("X-Request-Duration"));
         }
     }
 

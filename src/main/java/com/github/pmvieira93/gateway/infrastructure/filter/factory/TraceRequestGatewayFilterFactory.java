@@ -1,4 +1,4 @@
-package com.github.pmvieira93.gateway.infrastructure.filter;
+package com.github.pmvieira93.gateway.infrastructure.filter.factory;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public class LoggingRequestGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {
+public class TraceRequestGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {
 
-    private static final Logger logger = Logger.getLogger(LoggingRequestGatewayFilterFactory.class);
+    private static final Logger logger = Logger.getLogger(TraceRequestGatewayFilterFactory.class);
 
     static {
-        logger.info("=====Loaded LoggingFilterFactory=====");
+        logger.info("=====Loaded TraceRequestFilterFactory=====");
     }
 
     /*
@@ -35,7 +35,7 @@ public class LoggingRequestGatewayFilterFactory extends AbstractGatewayFilterFac
      */
     public static final String DETAILS_KEY = "details";
 
-    public LoggingRequestGatewayFilterFactory() {
+    public TraceRequestGatewayFilterFactory() {
         super(Object.class);
     }
 
