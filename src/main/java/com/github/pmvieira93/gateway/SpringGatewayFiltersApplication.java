@@ -41,6 +41,8 @@ public class SpringGatewayFiltersApplication {
 				 * c.setRateLimiter(redisRateLimiter())))
 				 * .uri("http://httpbin.org"))
 				 */
+
+				 // Example Using Custom Gateway Filter
 				.route("code_path_rewrite_apiversion_route",
 						r -> r.path("/version/**")
 								.filters(f -> f.rewritePath("/version/?(?<segment>.*)", "/${segment}")

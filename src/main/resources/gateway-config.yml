@@ -13,13 +13,13 @@ spring:
         filters:
         - RewritePath=/self/?(?<segment>.*), /$\{segment}
       
-      - id: httpbin_logging_route
+      - id: httpbin_trace_route
         uri: http://httpbin.org
         predicates:
-          - Path=/logging/**
+          - Path=/trace/**
         filters:
-          - RewritePath=/logging/?(?<segment>.*), /$\{segment}
-          - name: LoggingRequest
+          - RewritePath=/trace/?(?<segment>.*), /$\{segment}
+          - name: TraceRequest
             args:
               baseMessage: "Request to example route"
               details: true
