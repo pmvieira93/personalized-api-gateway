@@ -1,0 +1,32 @@
+version: '3.8'
+
+networks:
+  gateway-net:
+
+# Documentation:
+# https://hub.docker.com/r/openfga/openfga
+# https://raw.githubusercontent.com/openfga/openfga/main/docker-compose.yaml
+
+services:
+  openfga:
+    image: openfga/openfga:v1.5
+    container_name: openfga-policy
+    environment:
+      - OPENFGA_PLAYGROUND_ENABLED=true
+    ports:
+      - "8080:8080" #http
+      - "8081:8081" #grpc
+      - "3000:3000" #playground
+      - "2112:2112" #prometheus metrics
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/usr/local/bin/grpc_health_probe",
+          "-addr=openfga:8081"
+        ]
+      interval: 5s
+      timeout: 30s
+      retries: 3
+    networks:
+      - gateway-net
