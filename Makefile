@@ -4,7 +4,7 @@ SHELL := /bin/bash
 SERVICE_NAME:=
 
 up:
-	docker compose up --build -d
+	docker compose up --build -d $(if $(SERVICE_NAME),$(SERVICE_NAME))
 
 down:
-	docker compose down
+	docker compose down $(if $(SERVICE_NAME),$(SERVICE_NAME))

@@ -9,7 +9,7 @@ networks:
 
 services:
   openfga:
-    image: openfga/openfga:v1.5
+    image: openfga/openfga:v1.8
     container_name: openfga-policy
     environment:
       - OPENFGA_PLAYGROUND_ENABLED=true
