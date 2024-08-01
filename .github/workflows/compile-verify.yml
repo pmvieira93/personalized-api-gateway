@@ -1,0 +1,44 @@
+name: 'Maven Build & Verify'
+run-name: 'Maven Build & Verify'
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pull-requests: read
+
+env:
+  JDK_VERSION: 17
+  JDK_DIST: 'temurin'
+
+jobs:
+  build:
+    name: 'Build'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+
+      - name: 'Set up JDK ${{ env.JDK_VERSION }} of ${{ env.JDK_DIST }} '
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JDK_VERSION }}
+          distribution: ${{ env.JDK_DIST }}
+
+      - name: 'Build with Maven'
+        run: mvn --no-transfer-progress -B verify --file pom.xml
+        continue-on-error: true
+
+      - name: 'Upload test results'
+        uses: actions/upload-artifact@v3
+        with:
+          name: surefire-reports
+          path: target/surefire-reports
+          retention-days: 7
