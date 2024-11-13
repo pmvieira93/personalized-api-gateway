@@ -54,3 +54,5 @@ jobs:
           name: java-junit-tests
           path: target/surefire-reports/TEST-*.xml
           reporter: java-junit
+          only-summary: '${{ vars.TEST_REPORT_SUMMARY }}'
+          fail-on-error: 'false'
