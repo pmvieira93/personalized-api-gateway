@@ -42,3 +42,13 @@ jobs:
           name: surefire-reports
           path: target/surefire-reports
           retention-days: 7
+
+      # https://github.com/marketplace/actions/test-reporter
+      # Or https://github.com/test-summary/action
+      - name: 'Test Report'
+        uses: dorny/test-reporter@v1.9.1
+        if: always()
+        with:
+          name: java-junit-tests
+          path: target/surefire-reports/TEST-*.xml
+          reporter: java-junit
