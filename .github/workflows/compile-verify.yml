@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - create-action-generate-test-report
   pull_request:
     branches:
       - master
@@ -45,14 +46,24 @@ jobs:
           path: target/surefire-reports
           retention-days: 7
 
+      - name: 'Check Installed Packages'
+        run: |
+          which python 
+          python --version
+
+      - name: 'Generate Test Report'
+        run: |
+          python java-test-report.py -d -i target/surefire-reports
+          cat test-report.md >> $GITHUB_STEP_SUMMARY
+
       # https://github.com/marketplace/actions/test-reporter
       # Or https://github.com/test-summary/action
-      - name: 'Test Report'
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: java-junit-tests
-          path: target/surefire-reports/TEST-*.xml
-          reporter: java-junit
-          only-summary: '${{ vars.TEST_REPORT_SUMMARY }}'
-          fail-on-error: 'false'
+      #- name: 'Test Report'
+      #  uses: dorny/test-reporter@v1
+      #  if: always()
+      #  with:
+      #    name: java-junit-tests
+      #    path: target/surefire-reports/TEST-*.xml
+      #    reporter: java-junit
+      #    only-summary: '${{ vars.TEST_REPORT_SUMMARY }}'
+      #    fail-on-error: 'false'
