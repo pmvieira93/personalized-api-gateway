@@ -1,23 +1,31 @@
-version: '3.8'
 
+# Networks
 networks:
   gateway-net:
 
 # Documentation:
 # https://hub.docker.com/r/openfga/openfga
 # https://raw.githubusercontent.com/openfga/openfga/main/docker-compose.yaml
+# https://stackoverflow.com/questions/29377853/how-can-i-use-environment-variables-in-docker-compose
+# https://openfga.dev/docs/getting-started/setup-openfga/configure-openfga
 
+# Services
 services:
   openfga:
     image: openfga/openfga:v1.8
     container_name: openfga-policy
     environment:
       - OPENFGA_PLAYGROUND_ENABLED=true
+      - OPENFGA_AUTHN_METHOD=preshared
+      - OPENFGA_AUTHN_PRESHARED_KEYS=${AUTH_KEYS}
     ports:
       - "8080:8080" #http
       - "8081:8081" #grpc
       - "3000:3000" #playground
       - "2112:2112" #prometheus metrics
+    command:
+      - run
+    restart: on-failure
     healthcheck:
       test:
         [

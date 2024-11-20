@@ -6,26 +6,22 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.ApplicationScope;
+
 
 import java.util.Map;
 import java.util.Objects;
 
 /**
- * https://medium.berkayozcan.com/using-json-web-tokens-jwt-with-spring-boot-for-authentication-and-authorization-7d6f62ab5ecc
- * https://github.com/jwtk/jjwt?tab=readme-ov-file#reading-a-jws
+ * <a href="https://medium.berkayozcan.com/using-json-web-tokens-jwt-with-spring-boot-for-authentication-and-authorization-7d6f62ab5ecc">...</a>
+ * <a href="https://github.com/jwtk/jjwt?tab=readme-ov-file#reading-a-jws">...</a>
  */
 @Slf4j
-@Component
-@ApplicationScope
 public class JwtTokenProvider {
 
 
     private final String secretKey;
 
-    public JwtTokenProvider(@Value("${jwt.security.secret}") final String secretKey) {
+    public JwtTokenProvider(final String secretKey) {
         this.secretKey = secretKey;
     }
 

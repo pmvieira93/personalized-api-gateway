@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.logging.Logger;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -16,18 +17,15 @@ import com.github.pmvieira93.gateway.infrastructure.filter.factory.ApiVersionVal
 
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Component
 public class ApiVersionValidationFilter implements GatewayFilter {
 
     static final String VERSION_REGEX = "([0-9]+\\.[0-9]+\\.[0-9]+)";
-
     static final String DEFAULT_HEADER = "api-version";
-
-    static final Logger logger = Logger.getLogger(ApiVersionValidationFilter.class);
+    static final Double versionGreaterThan = 3.11D;
 
     ApiVersionValidationGatewayFilterFactory.Config args;
-
-    private static final Double versionGreaterThan = 3.11D;
 
     public ApiVersionValidationFilter() {
     }
@@ -41,7 +39,7 @@ public class ApiVersionValidationFilter implements GatewayFilter {
         String headerKey = exchange.getRequest().getHeaders().containsKey(args.getHeaderName()) ? args.getHeaderName()
                 : DEFAULT_HEADER;
         String headerValue = exchange.getRequest().getHeaders().getFirst(headerKey);
-        logger.debug("Header key|value: " + headerKey + "|" + headerValue);
+        log.debug("Header key|value: " + headerKey + "|" + headerValue);
         if(Objects.isNull(headerValue)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -50,14 +48,14 @@ public class ApiVersionValidationFilter implements GatewayFilter {
             if (isValid) {
                 return chain.filter(exchange);
             } else {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN));
             }
         });
     }
 
     private Mono<Boolean> validateApiVersion(String version) {
         Double requestedVersion = versionStringToDouble(version);
-        logger.info("Requested version: " + requestedVersion + " | Version greater than: " + versionGreaterThan);
+        log.info("Requested version: " + requestedVersion + " | Version greater than: " + versionGreaterThan);
         return Mono.just(requestedVersion >= versionGreaterThan);
     }
 
@@ -66,7 +64,7 @@ public class ApiVersionValidationFilter implements GatewayFilter {
         final Matcher matcher = pattern.matcher(version);
         Double result = 0.0D;
         if (matcher.find()) {
-            logger.debug("Version found: " + matcher.group(1));
+            log.debug("Version found: " + matcher.group(1));
             String numericString = matcher.group(1);
             final int endIndex = numericString.lastIndexOf(".");
             final StringBuffer buffer = new StringBuffer(numericString);

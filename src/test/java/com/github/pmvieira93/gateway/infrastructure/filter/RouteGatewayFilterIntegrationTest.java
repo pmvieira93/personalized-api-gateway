@@ -1,4 +1,4 @@
-package com.github.pmvieira93.gateway;
+package com.github.pmvieira93.gateway.infrastructure.filter;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertNotNull;
@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.regex.Pattern;
 
+import com.github.pmvieira93.gateway.TestcontainersConfiguration;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,12 +20,11 @@ import io.restassured.response.ValidatableResponse;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RouteGatewayFilterIntegrationTest {
 
+    static final String RESPONSE_PATTERN = ".+(([0-9]{1,3}\\.?){4},? ?)+.+";
+    static final String BASE_URL = "http://localhost";
+
     @LocalServerPort
     int LOCAL_SERVER_PORT;
-
-    static final String RESPONSE_PATTERN = ".+(([0-9]{1,3}\\.?){4},? ?)+.+";
-
-    static final String BASE_URL = "http://localhost";
 
     @Nested
     class ConfigWithApiValidationSeries1 {

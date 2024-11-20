@@ -1,7 +1,10 @@
 package com.github.pmvieira93.gateway.infrastructure.security;
 
 
+import com.auth0.jwt.interfaces.Claim;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,6 +75,43 @@ class JwtTokenProviderTest {
 
         // Then
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void givenNullSecretKey_whenGetUser_shouldReturnNull() {
+        // Given
+        JwtTokenProvider jwtTokenProviderProxy = new JwtTokenProvider(null);
+
+        // When
+        String result = jwtTokenProviderProxy.getUser(TOKEN);
+
+        // Then
+        assertThat(result).isNull();
+    }
+
+    @Test
+    void givenValidToken_whenParseToken_shouldReturnPayloadAsMap() {
+        // Given & When
+
+        Map<String, Claim> result = jwtTokenProvider.parseToken(TOKEN);
+
+        // Then
+        assertThat(result)
+                .isNotNull()
+                .hasSizeGreaterThan(0);
+    }
+
+    @Test
+    void givenInvalidToken_whenParseToken_shouldReturnEmptyMap() {
+        // Given
+        JwtTokenProvider jwtTokenProviderProxy = new JwtTokenProvider("gateway-spring");
+
+        // When
+        Map<String, Claim> result = jwtTokenProviderProxy.parseToken(TOKEN);
+
+        // Then
+        assertThat(result)
+                .isNull();
     }
 
 }

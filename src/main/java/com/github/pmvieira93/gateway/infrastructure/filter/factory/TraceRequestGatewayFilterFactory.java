@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.logging.Logger;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -11,13 +12,12 @@ import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Component
 public class TraceRequestGatewayFilterFactory extends AbstractGatewayFilterFactory<Object> {
 
-    private static final Logger logger = Logger.getLogger(TraceRequestGatewayFilterFactory.class);
-
     static {
-        logger.info("=====Loaded TraceRequestFilterFactory=====");
+        log.info("=====Loaded TraceRequestFilterFactory=====");
     }
 
     /*
@@ -50,12 +50,12 @@ public class TraceRequestGatewayFilterFactory extends AbstractGatewayFilterFacto
             String requestId = exchange.getRequest().getId();
             Long requestStarts = Instant.now().toEpochMilli();
 
-            logger.info("Pre-filter: request id ->" + requestId);
+            log.info("Pre-filter: request id ->" + requestId);
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
                 exchange.getResponse().getHeaders().add("X-Request-Id", requestId);
                 exchange.getResponse().getHeaders().add("X-Request-Duration",
                         (Instant.now().toEpochMilli() - requestStarts) + "ms");
-                logger.info("Post-filter: response code -> " + exchange.getResponse().getStatusCode());
+                log.info("Post-filter: response code -> " + exchange.getResponse().getStatusCode());
             }));
         };
     }
