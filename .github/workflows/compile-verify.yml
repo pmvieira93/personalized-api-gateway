@@ -32,8 +32,8 @@ jobs:
       - name: 'Check Installed tools'
         run: |
           docker --version
-          docker-compose --version
-          node --version
+          docker compose --version 2>&1
+          node --version 2>&1
 
       - name: 'Set up JDK ${{ env.JDK_VERSION }} of ${{ env.JDK_DIST }} '
         uses: actions/setup-java@v4
