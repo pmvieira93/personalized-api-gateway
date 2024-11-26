@@ -32,14 +32,33 @@ jobs:
       - name: 'Check Installed tools'
         run: |
           docker --version
-          docker compose --version 2>&1
+          docker compose version 2>&1
           node --version 2>&1
+          python --version 2>&1
+          npm --version 2>&1
+          jq --version 2>&1
+
+      - name: 'Install Additional Packages'
+        run: |
+          echo "Install newman from NPM"
+          npm install -g newman
 
       - name: 'Set up JDK ${{ env.JDK_VERSION }} of ${{ env.JDK_DIST }} '
         uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JDK_VERSION }}
           distribution: ${{ env.JDK_DIST }}
+
+      - name: 'Initialize Dependencies'
+        if: ${{ hashFiles('./docker-compose.yaml') != '' }}
+        run: |
+          # Initializer Docker Services
+          docker compose up --build -d
+          sleep 10
+          newman run fga-initializer.postman_collection.json --export-globals ./target/generated-ids.json
+          cat ./target/generated-ids.json | jq
+          jq -r '.values | map("export \(.key|sub("-";"_"; "g")|ascii_upcase)=\(.value|tostring)")|.[]' ./target/generated-ids.json > ./target/.spring-env
+          source ./target/.spring-env
 
       - name: 'Build with Maven'
         run: mvn --no-transfer-progress -B verify --file pom.xml
@@ -52,14 +71,8 @@ jobs:
           path: target/surefire-reports
           retention-days: 7
 
-      # https://github.com/marketplace/actions/test-reporter
-      # Or https://github.com/test-summary/action
-      - name: 'Test Report'
-        uses: dorny/test-reporter@v1
+      - name: 'Generate Test Report'
         if: always()
-        with:
-          name: java-junit-tests
-          path: target/surefire-reports/TEST-*.xml
-          reporter: java-junit
-          only-summary: '${{ vars.TEST_REPORT_SUMMARY }}'
-          fail-on-error: 'false'
+        run: |
+          python .github/java-test-report.py --details --input target/surefire-reports
+          cat test-report.md >> $GITHUB_STEP_SUMMARY
