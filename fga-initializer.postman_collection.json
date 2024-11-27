@@ -1,0 +1,352 @@
+{
+	"info": {
+		"_postman_id": "2aa18eac-2200-40f3-9353-c09d2ea2ab37",
+		"name": "Exporter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39190439"
+	},
+	"item": [
+		{
+			"name": "Create Store",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"\tpm.response.to.have.status(201);",
+							"",
+							"\tvar responseData = pm.response.json();",
+							"\tpm.globals.set(\"fga-store-id\",responseData.id);",
+							"",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "gateway-api-key-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"gateway-resource-policy\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/stores",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"stores"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Auth Model",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"\tpm.response.to.have.status(201);",
+							"",
+							"\tvar responseData = pm.response.json();",
+							"\tpm.globals.set(\"fga-auth-model-id\",responseData.authorization_model_id);",
+							"",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "gateway-api-key-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"schema_version\": \"1.1\",\n  \"type_definitions\": [\n    {\n      \"type\": \"user\",\n      \"relations\": {},\n      \"metadata\": null\n    },\n    {\n      \"type\": \"resource\",\n      \"relations\": {\n        \"delete\": {\n          \"this\": {}\n        },\n        \"get\": {\n          \"this\": {}\n        },\n        \"patch\": {\n          \"this\": {}\n        },\n        \"post\": {\n          \"this\": {}\n        },\n        \"put\": {\n          \"this\": {}\n        }\n      },\n      \"metadata\": {\n        \"relations\": {\n          \"delete\": {\n            \"directly_related_user_types\": [\n              {\n                \"type\": \"user\"\n              },\n              {\n                \"type\": \"user\",\n                \"condition\": \"ttl\"\n              }\n            ]\n          },\n          \"get\": {\n            \"directly_related_user_types\": [\n              {\n                \"type\": \"user\"\n              },\n              {\n                \"type\": \"user\",\n                \"condition\": \"ttl\"\n              }\n            ]\n          },\n          \"patch\": {\n            \"directly_related_user_types\": [\n              {\n                \"type\": \"user\"\n              },\n              {\n                \"type\": \"user\",\n                \"condition\": \"ttl\"\n              }\n            ]\n          },\n          \"post\": {\n            \"directly_related_user_types\": [\n              {\n                \"type\": \"user\"\n              },\n              {\n                \"type\": \"user\",\n                \"condition\": \"ttl\"\n              }\n            ]\n          },\n          \"put\": {\n            \"directly_related_user_types\": [\n              {\n                \"type\": \"user\"\n              },\n              {\n                \"type\": \"user\",\n                \"condition\": \"ttl\"\n              }\n            ]\n          }\n        }\n      }\n    }\n  ],\n  \"conditions\": {\n    \"ttl\": {\n      \"name\": \"ttl\",\n      \"expression\": \"current <= expiry\",\n      \"parameters\": {\n        \"current\": {\n          \"type_name\": \"TYPE_NAME_UINT\"\n        },\n        \"expiry\": {\n          \"type_name\": \"TYPE_NAME_UINT\"\n        }\n      }\n    }\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/stores/{{fga-store-id}}/authorization-models",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"stores",
+						"{{fga-store-id}}",
+						"authorization-models"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Tuples",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"\tpm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "gateway-api-key-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"writes\": {\n    \"tuple_keys\": [\n      {\n        \"user\": \"user:foo\",\n        \"relation\": \"get\",\n        \"object\": \"resource:/ip\"\n      },\n\t  {\n        \"user\": \"user:1234567890\",\n        \"relation\": \"get\",\n        \"object\": \"resource:/ip\"\n      },\n\t  {\n          \"user\": \"user:bar\",\n          \"relation\": \"post\",\n          \"object\": \"resource:/ip\",\n          \"condition\": {\n            \"name\": \"ttl\",\n            \"context\": {\n\t\t\t\t\"expiry\": \"1795209680\"\n\t\t\t}\n          }\n\t  }\n    ]\n  },\n  \"authorization_model_id\": \"{{fga-auth-model-id}}\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/stores/{{fga-store-id}}/write",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"stores",
+						"{{fga-store-id}}",
+						"write"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Foo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"\tpm.response.to.have.status(200);",
+							"",
+							"\tvar responseData = pm.response.json();",
+							"\tpm.expect(responseData.allowed).to.be.true;",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "gateway-api-key-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"tuple_key\": {\n    \"user\": \"user:foo\",\n    \"relation\": \"get\",\n    \"object\": \"resource:/ip\"\n  },\n  \"authorization_model_id\": \"{{fga-auth-model-id}}\",\n  \"consistency\": \"MINIMIZE_LATENCY\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/stores/{{fga-store-id}}/check",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"stores",
+						"{{fga-store-id}}",
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Bar",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"\tpm.response.to.have.status(200);",
+							"",
+							"\tvar responseData = pm.response.json();",
+							"\tpm.expect(responseData.allowed).to.be.true;",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "gateway-api-key-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"tuple_key\": {\n    \"user\": \"user:bar\",\n    \"relation\": \"post\",\n    \"object\": \"resource:/ip\"\n  },\n  \"authorization_model_id\": \"{{fga-auth-model-id}}\",\n  \"context\": {\n\t\"current\": \"1732652101\"\n  },\n  \"consistency\": \"MINIMIZE_LATENCY\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/stores/{{fga-store-id}}/check",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"stores",
+						"{{fga-store-id}}",
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Bar Expired",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"\tpm.response.to.have.status(200);",
+							"",
+							"\tvar responseData = pm.response.json();",
+							"\tpm.expect(responseData.allowed).to.be.false;",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "gateway-api-key-v1",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"tuple_key\": {\n    \"user\": \"user:bar\",\n    \"relation\": \"post\",\n    \"object\": \"resource:/ip\"\n  },\n  \"authorization_model_id\": \"{{fga-auth-model-id}}\",\n  \"context\": {\n\t\"current\": \"1795209681\"\n  },\n  \"consistency\": \"MINIMIZE_LATENCY\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/stores/{{fga-store-id}}/check",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"stores",
+						"{{fga-store-id}}",
+						"check"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

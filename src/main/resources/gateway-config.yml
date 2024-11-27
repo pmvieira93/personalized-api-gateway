@@ -64,10 +64,10 @@ spring:
       - id: httpbin_resourcepolicyfilter_v1_route
         uri: http://httpbin.org
         predicates:
-          - Path=/v1/policy/**
+          - Path=/policy/v1/**
         filters:
-          - RewritePath=/v1/policy/?(?<segment>.*), /$\{segment}
-          - name: ResourcePolicyFilter
+          - RewritePath=/policy/v1/?(?<segment>.*), /$\{segment}
+          - name: ResourcePolicy
             args:
-              openfgaStoreId: ${STORE_ID:gateway-store-id}
-              openFgaAuthModelId: ${MODEL_ID:gateway-model-id}
+              openfgaStoreId: ${FGA_STORE_ID:01JD83B519SCNBAZ6REF95P2QY}
+              openFgaAuthModelId: ${FGA_MODEL_ID:01JD83B519SCNBAZ6REF95P2QY}

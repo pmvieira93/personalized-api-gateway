@@ -62,15 +62,16 @@ public class ResourcePolicyFilter implements GatewayFilter {
         boolean result = false;
         final String token = Objects.requireNonNullElse(request.getHeaders()
                 .getFirst("Authorization"), "").substring(7).trim();
-        final String userId = getUserId(token);
+        final String userId = tokenProvider.getUser(token);
         if (Objects.nonNull(userId)) {
-            final String httpMethod = request.getMethod().name();
-            final String uri = request.getPath().value();
+            final String httpMethod = request.getMethod().name().toLowerCase();
+            final String uri = request.getPath().value().toLowerCase();
 
             var openFgaRequest = new ClientCheckRequest()
                     .user(USER_PREFIX + userId)
-                    .relation(httpMethod.toLowerCase())
+                    .relation(httpMethod)
                     ._object(OBJECT_PREFIX + uri);
+            log.info("Checking authorization model {} {} {}", userId, httpMethod, uri);
             var openFgaOptions = new ClientCheckOptions().authorizationModelId(this.authModelId);
             try {
                 var openFgaResponse = client.check(openFgaRequest, openFgaOptions).get();
@@ -80,10 +81,6 @@ public class ResourcePolicyFilter implements GatewayFilter {
             }
         }
         return Mono.just(result);
-    }
-
-    private String getUserId(final String token) {
-        return tokenProvider.getUser(token);
     }
 
     private void loadAuthorizationModels() {
@@ -102,7 +99,7 @@ public class ResourcePolicyFilter implements GatewayFilter {
             }
         } catch (ExecutionException | InterruptedException | FgaInvalidParameterException e) {
             log.error("Fail to load Authorization models from openFGA store: {0}",e);
-            throw new RuntimeException("Fail to load Authorization models from openFGA store",e);
+            //throw new RuntimeException("Fail to load Authorization models from openFGA store",e);
         }
     }
 }

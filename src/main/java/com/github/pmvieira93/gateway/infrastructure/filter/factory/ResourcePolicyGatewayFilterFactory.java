@@ -4,6 +4,7 @@ import com.github.pmvieira93.gateway.infrastructure.filter.ResourcePolicyFilter;
 import com.github.pmvieira93.gateway.infrastructure.security.JwtTokenProvider;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -44,10 +45,13 @@ public class ResourcePolicyGatewayFilterFactory
      * Definition of Required configs to use this Filter
      */
     @Getter
+    @Setter
     public static class Config {
 
         String openfgaStoreId;
         String openFgaAuthModelId;
+
+        public Config() {}
 
         public Config(String openfgaStoreId) {
             this.openfgaStoreId = openfgaStoreId;

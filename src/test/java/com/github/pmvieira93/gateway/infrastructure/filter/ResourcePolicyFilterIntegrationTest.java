@@ -3,16 +3,15 @@ package com.github.pmvieira93.gateway.infrastructure.filter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pmvieira93.gateway.DockerComposeUtils;
-import dev.openfga.sdk.api.OpenFgaApi;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientWriteRequest;
+import dev.openfga.sdk.api.configuration.ClientConfiguration;
 import dev.openfga.sdk.api.configuration.ClientWriteOptions;
 import dev.openfga.sdk.api.model.CreateStoreRequest;
 import dev.openfga.sdk.api.model.WriteAuthorizationModelRequest;
 import dev.openfga.sdk.errors.FgaInvalidParameterException;
 import io.restassured.response.ValidatableResponse;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,24 +19,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Profile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
-
+@Profile("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ResourcePolicyFilterIntegrationTest {
 
@@ -59,7 +51,7 @@ class ResourcePolicyFilterIntegrationTest {
     OpenFgaClient fgaClient;
 
     @Autowired
-    OpenFgaApi fgaApi;
+    ClientConfiguration fgaConfig;
 
     @BeforeAll
     static void beforeAll() {
@@ -79,7 +71,8 @@ class ResourcePolicyFilterIntegrationTest {
             modelId = modelResponse.getAuthorizationModelId();
             fgaClient.setAuthorizationModelId(modelId);
 
-        } catch (FgaInvalidParameterException | InterruptedException | ExecutionException | JsonProcessingException ex) {
+        } catch (FgaInvalidParameterException | InterruptedException | ExecutionException |
+                 JsonProcessingException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -100,7 +93,7 @@ class ResourcePolicyFilterIntegrationTest {
         try {
             var options = new ClientWriteOptions()
                     .authorizationModelId(modelId);
-            var body = buildTupleRequest(List.of(new Tuple("user:1234567890","get", "resource:/ip/invalid", null)));
+            var body = buildTupleRequest(List.of(new Tuple("user:1234567890", "get", "resource:/ip/invalid", null)));
             var response = fgaClient.write(body, options).get();
         } catch (InterruptedException | ExecutionException | FgaInvalidParameterException e) {
             throw new RuntimeException(e);
@@ -112,7 +105,7 @@ class ResourcePolicyFilterIntegrationTest {
                 .port(LOCAL_SERVER_PORT)
                 .when()
                 .header("ApiVersion", "4.5.0")
-                .header("Authorization","Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3Qtd2ViIiwic3ViIjoiMTIzNDU2Nzg5MCIsImF1ZCI6ImFwaS1nYXRld2F5IiwibmFtZSI6ImZvbyIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzYzNzE1ODkxLCJqdGkiOiI5NmM3ZmMyNi1kNjQwLTRmZGYtODlmNi1hYjRkYmJiNmNlYTQifQ.trSAHOMPsvCCpc6AL5GSB7o7I2NLzVd1yEOnnpI0tAM")
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3Qtd2ViIiwic3ViIjoiMTIzNDU2Nzg5MCIsImF1ZCI6ImFwaS1nYXRld2F5IiwibmFtZSI6ImZvbyIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzYzNzE1ODkxLCJqdGkiOiI5NmM3ZmMyNi1kNjQwLTRmZGYtODlmNi1hYjRkYmJiNmNlYTQifQ.trSAHOMPsvCCpc6AL5GSB7o7I2NLzVd1yEOnnpI0tAM")
                 .get("/version/ip")
                 .then()
                 .statusCode(403);
@@ -130,7 +123,7 @@ class ResourcePolicyFilterIntegrationTest {
         try {
             var options = new ClientWriteOptions()
                     .authorizationModelId(modelId);
-            var body = buildTupleRequest(List.of(new Tuple("user:1234567890","get", "resource:/ip", null)));
+            var body = buildTupleRequest(List.of(new Tuple("user:1234567890", "get", "resource:/ip", null)));
             var response = fgaClient.write(body, options).get();
         } catch (InterruptedException | ExecutionException | FgaInvalidParameterException e) {
             throw new RuntimeException(e);
@@ -142,7 +135,7 @@ class ResourcePolicyFilterIntegrationTest {
                 .port(LOCAL_SERVER_PORT)
                 .when()
                 .header("ApiVersion", "4.5.0")
-                .header("Authorization","Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3Qtd2ViIiwic3ViIjoiMTIzNDU2Nzg5MCIsImF1ZCI6ImFwaS1nYXRld2F5IiwibmFtZSI6ImZvbyIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzYzNzE1ODkxLCJqdGkiOiI5NmM3ZmMyNi1kNjQwLTRmZGYtODlmNi1hYjRkYmJiNmNlYTQifQ.trSAHOMPsvCCpc6AL5GSB7o7I2NLzVd1yEOnnpI0tAM")
+                .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqd3Qtd2ViIiwic3ViIjoiMTIzNDU2Nzg5MCIsImF1ZCI6ImFwaS1nYXRld2F5IiwibmFtZSI6ImZvbyIsImlhdCI6MTUxNjIzOTAyMiwiZXhwIjoxNzYzNzE1ODkxLCJqdGkiOiI5NmM3ZmMyNi1kNjQwLTRmZGYtODlmNi1hYjRkYmJiNmNlYTQifQ.trSAHOMPsvCCpc6AL5GSB7o7I2NLzVd1yEOnnpI0tAM")
                 .get("/version/ip")
                 .then()
                 .statusCode(200);
@@ -156,14 +149,17 @@ class ResourcePolicyFilterIntegrationTest {
     private ClientWriteRequest buildTupleRequest(List<Tuple> tuples) {
         return new ClientWriteRequest()
                 .writes(tuples.stream()
-                        .map( t -> new ClientTupleKey()
+                        .map(t -> new ClientTupleKey()
                                 .user(t.user())
                                 .relation(t.relation())
                                 ._object(t.object()))
                         .toList());
     }
 
-    record Tuple(String user, String relation, String object, TupleCondition condition) {}
-    record TupleCondition(String name, Map<String, Object> context){}
+    record Tuple(String user, String relation, String object, TupleCondition condition) {
+    }
+
+    record TupleCondition(String name, Map<String, Object> context) {
+    }
 
 }
