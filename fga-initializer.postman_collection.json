@@ -134,6 +134,21 @@
 						"type": "text/javascript",
 						"packages": {}
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let dt = new Date().getTime();",
+							"let expiring = parseInt((dt/1000) + 2592000);",
+							"pm.collectionVariables.set(\"guest-expiring-time\",expiring);",
+							"",
+							"// 1732790690123",
+							"// 1735382005"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
 				}
 			],
 			"request": {
@@ -151,7 +166,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"writes\": {\n    \"tuple_keys\": [\n      {\n        \"user\": \"user:foo\",\n        \"relation\": \"get\",\n        \"object\": \"resource:/ip\"\n      },\n\t  {\n        \"user\": \"user:1234567890\",\n        \"relation\": \"get\",\n        \"object\": \"resource:/ip\"\n      },\n\t  {\n          \"user\": \"user:bar\",\n          \"relation\": \"post\",\n          \"object\": \"resource:/ip\",\n          \"condition\": {\n            \"name\": \"ttl\",\n            \"context\": {\n\t\t\t\t\"expiry\": \"1795209680\"\n\t\t\t}\n          }\n\t  }\n    ]\n  },\n  \"authorization_model_id\": \"{{fga-auth-model-id}}\"\n}\n",
+					"raw": "{\n  \"writes\": {\n    \"tuple_keys\": [\n      {\n        \"user\": \"user:foo\",\n        \"relation\": \"get\",\n        \"object\": \"resource:/ip\"\n      },\n\t  {\n        \"user\": \"user:1234567890\",\n        \"relation\": \"get\",\n        \"object\": \"resource:/ip\"\n      },\n\t  {\n        \"user\": \"user:bar123\",\n        \"relation\": \"get\",\n        \"object\": \"resource:/ip\",\n\t\t\"condition\": {\n            \"name\": \"ttl\",\n            \"context\": {\n\t\t\t\t\"expiry\": \"1795209680\"\n\t\t\t}\n          }\n      },\n\t  {\n        \"user\": \"user:john909+bar123\",\n        \"relation\": \"get\",\n        \"object\": \"resource:/ip\",\n\t\t\"condition\": {\n            \"name\": \"ttl\",\n            \"context\": {\n\t\t\t\t\"expiry\": \"{{guest-expiring-time}}\"\n\t\t\t}\n          }\n      },\n\t  {\n          \"user\": \"user:bar\",\n          \"relation\": \"post\",\n          \"object\": \"resource:/ip\",\n          \"condition\": {\n            \"name\": \"ttl\",\n            \"context\": {\n\t\t\t\t\"expiry\": \"1795209680\"\n\t\t\t}\n          }\n\t  }\n    ]\n  },\n  \"authorization_model_id\": \"{{fga-auth-model-id}}\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"

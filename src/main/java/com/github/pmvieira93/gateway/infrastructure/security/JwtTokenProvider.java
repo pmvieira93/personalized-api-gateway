@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <a href="https://medium.berkayozcan.com/using-json-web-tokens-jwt-with-spring-boot-for-authentication-and-authorization-7d6f62ab5ecc">...</a>
@@ -18,6 +19,9 @@ import java.util.Objects;
 @Slf4j
 public class JwtTokenProvider {
 
+    public static final String USER_ID = "sub";
+    public static final String SIGN="sign";
+    public static final String ON_BEHALF_OF="onbehalfof";
 
     private final String secretKey;
 

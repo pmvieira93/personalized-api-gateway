@@ -1,5 +1,8 @@
 package com.github.pmvieira93.gateway.infrastructure.filter;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.github.pmvieira93.gateway.common.Signature;
+import com.github.pmvieira93.gateway.common.utils.JwtTokenUtils;
 import com.github.pmvieira93.gateway.infrastructure.filter.factory.ResourcePolicyGatewayFilterFactory;
 import com.github.pmvieira93.gateway.infrastructure.security.JwtTokenProvider;
 import dev.openfga.sdk.api.client.OpenFgaClient;
@@ -17,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -62,16 +66,32 @@ public class ResourcePolicyFilter implements GatewayFilter {
         boolean result = false;
         final String token = Objects.requireNonNullElse(request.getHeaders()
                 .getFirst("Authorization"), "").substring(7).trim();
-        final String userId = tokenProvider.getUser(token);
-        if (Objects.nonNull(userId)) {
+        final Map<String, Claim> tokenPayload = tokenProvider.parseToken(token);
+        final String userId = JwtTokenUtils.search(JwtTokenProvider.USER_ID, tokenPayload);
+        final String signature = Objects.requireNonNullElse(JwtTokenUtils.search(JwtTokenProvider.SIGN, tokenPayload),
+                Signature.FREE.name()).toUpperCase();
+        if (Objects.nonNull(tokenPayload)
+                && Objects.nonNull(userId)) {
+            String userToSearch = userId;
+            if(Signature.GUEST.name().equals(signature)) {
+                final String onBehalfOf = JwtTokenUtils.search(JwtTokenProvider.ON_BEHALF_OF, tokenPayload);
+                userToSearch = userId + "+" + onBehalfOf;
+            }
             final String httpMethod = request.getMethod().name().toLowerCase();
             final String uri = request.getPath().value().toLowerCase();
+            long currentSec = -1L;
 
             var openFgaRequest = new ClientCheckRequest()
-                    .user(USER_PREFIX + userId)
+                    .user(USER_PREFIX + userToSearch)
                     .relation(httpMethod)
                     ._object(OBJECT_PREFIX + uri);
-            log.info("Checking authorization model {} {} {}", userId, httpMethod, uri);
+
+            if(Signature.GUEST.name().equals(signature) || Signature.PREMIUM.name().equals(signature)){
+                currentSec = System.currentTimeMillis()/1000;
+                openFgaRequest.context(new CheckContext(String.valueOf(currentSec)));
+            }
+
+            log.info("Checking authorization model {} {} {} {}", userToSearch, httpMethod, uri, currentSec);
             var openFgaOptions = new ClientCheckOptions().authorizationModelId(this.authModelId);
             try {
                 var openFgaResponse = client.check(openFgaRequest, openFgaOptions).get();
@@ -102,4 +122,6 @@ public class ResourcePolicyFilter implements GatewayFilter {
             //throw new RuntimeException("Fail to load Authorization models from openFGA store",e);
         }
     }
+
+    record CheckContext(String current){}
 }
