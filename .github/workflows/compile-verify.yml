@@ -77,3 +77,9 @@ jobs:
         run: |
           python .github/java-test-report.py --details --input target/surefire-reports
           cat test-report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: 'Generate JaCoCo Report'
+        if: ${{ always() && hashFiles('target/site/jacoco/jacoco.xml') != '' }}
+        run: |
+          python .github/java-jacoco-report.py --details --input 'target/site/jacoco/jacoco.xml' --check 90.0
+          cat jacoco-report.md >> $GITHUB_STEP_SUMMARY
