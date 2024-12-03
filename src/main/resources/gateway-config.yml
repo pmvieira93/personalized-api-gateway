@@ -59,4 +59,15 @@ spring:
         - Path=/v2_2/**
         filters:
         - RewritePath=/v2_2/?(?<segment>.*), /$\{segment}
-        - ApiVersionValidationV2=X-Api-Version, 403 
+        - ApiVersionValidationV2=X-Api-Version, 403
+
+      - id: httpbin_resourcepolicyfilter_v1_route
+        uri: http://httpbin.org
+        predicates:
+          - Path=/policy/v1/**
+        filters:
+          - RewritePath=/policy/v1/?(?<segment>.*), /$\{segment}
+          - name: ResourcePolicy
+            args:
+              openfgaStoreId: ${FGA_STORE_ID:01JD83B519SCNBAZ6REF95P2QY}
+              openFgaAuthModelId: ${FGA_MODEL_ID:01JD83B519SCNBAZ6REF95P2QY}

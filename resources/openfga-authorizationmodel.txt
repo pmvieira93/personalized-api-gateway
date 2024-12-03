@@ -1,0 +1,111 @@
+OpenFGA:
+
+DSL
+
+model
+  schema 1.1
+
+type user
+
+type resource
+  relations
+    define delete: [user]
+    define get: [user, user with ttl]
+    define patch: [user]
+    define post: [user]
+    define put: [user]
+
+condition ttl(current: uint, expiry: uint) {
+  current <= expiry
+}
+	
+	
+JSON
+
+{
+  "schema_version": "1.1",
+  "type_definitions": [
+    {
+      "type": "user",
+      "relations": {},
+      "metadata": null
+    },
+    {
+      "type": "resource",
+      "relations": {
+        "delete": {
+          "this": {}
+        },
+        "get": {
+          "this": {}
+        },
+        "patch": {
+          "this": {}
+        },
+        "post": {
+          "this": {}
+        },
+        "put": {
+          "this": {}
+        }
+      },
+      "metadata": {
+        "relations": {
+          "delete": {
+            "directly_related_user_types": [
+              {
+                "type": "user"
+              }
+            ]
+          },
+          "get": {
+            "directly_related_user_types": [
+              {
+                "type": "user"
+              },
+              {
+                "type": "user",
+                "condition": "ttl"
+              }
+            ]
+          },
+          "patch": {
+            "directly_related_user_types": [
+              {
+                "type": "user"
+              }
+            ]
+          },
+          "post": {
+            "directly_related_user_types": [
+              {
+                "type": "user"
+              }
+            ]
+          },
+          "put": {
+            "directly_related_user_types": [
+              {
+                "type": "user"
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "conditions": {
+    "ttl": {
+      "name": "ttl",
+      "expression": "current <= expiry",
+      "parameters": {
+        "current": {
+          "type_name": "TYPE_NAME_UINT"
+        },
+        "expiry": {
+          "type_name": "TYPE_NAME_UINT"
+        }
+      }
+    }
+  }
+}

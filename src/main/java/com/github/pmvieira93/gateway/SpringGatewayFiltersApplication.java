@@ -1,5 +1,6 @@
 package com.github.pmvieira93.gateway;
 
+import com.github.pmvieira93.gateway.infrastructure.filter.factory.ResourcePolicyGatewayFilterFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -18,7 +19,8 @@ public class SpringGatewayFiltersApplication {
 
 	@Bean
 	public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-			ApiVersionValidationGatewayFilterFactory apiVersionValidationFilterFactory) {
+										   ApiVersionValidationGatewayFilterFactory apiVersionValidationFilterFactory,
+										   ResourcePolicyGatewayFilterFactory resourcePolicyGatewayFilterFactory) {
 		return builder.routes()
 				.route("code_path_route", r -> r.path("/get")
 						.uri("http://httpbin.org"))
@@ -46,7 +48,11 @@ public class SpringGatewayFiltersApplication {
 				.route("code_path_rewrite_apiversion_route",
 						r -> r.path("/version/**")
 								.filters(f -> f.rewritePath("/version/?(?<segment>.*)", "/${segment}")
-										.filter(apiVersionValidationFilterFactory.apply(new Config("ApiVersion"))))
+										.filter(apiVersionValidationFilterFactory
+												.apply(new Config("ApiVersion")))
+										.filter(resourcePolicyGatewayFilterFactory
+												.apply(new ResourcePolicyGatewayFilterFactory.Config("01JD83B519SCNBAZ6REF95P2QY")))
+								)
 								.uri("http://httpbin.org"))
 				.build();
 	}

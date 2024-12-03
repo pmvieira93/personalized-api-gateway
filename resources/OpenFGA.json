@@ -1,0 +1,268 @@
+{
+  "v": 2,
+  "name": "OpenFGA",
+  "folders": [],
+  "requests": [
+    {
+      "v": "4",
+      "endpoint": "http://localhost:8080/stores",
+      "name": "GET: Stores",
+      "params": [],
+      "headers": [
+        {
+          "active": true,
+          "key": "user-id",
+          "value": "pedro"
+        },
+        {
+          "active": true,
+          "key": "x-correlation-id",
+          "value": "1234567890"
+        }
+      ],
+      "method": "GET",
+      "auth": {
+        "authType": "basic",
+        "authActive": true,
+        "username": "dev.user",
+        "password": "password"
+      },
+      "preRequestScript": "",
+      "testScript": "",
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"name\": \"administrator\",\n  \"type\": \"admin\",\n  \"estimate\": 50,\n  \"spend\": 49\n}"
+      },
+      "requestVariables": []
+    },
+    {
+      "v": "4",
+      "endpoint": "http://localhost:8080/stores/01JB4KSGF71M1A53N61T1B6MA3/authorization-models",
+      "name": "GET: Auth Models",
+      "params": [],
+      "headers": [
+        {
+          "active": true,
+          "key": "user-id",
+          "value": "pedro"
+        },
+        {
+          "active": true,
+          "key": "x-correlation-id",
+          "value": "1234567890"
+        }
+      ],
+      "method": "GET",
+      "auth": {
+        "authType": "basic",
+        "authActive": true,
+        "username": "dev.user",
+        "password": "password"
+      },
+      "preRequestScript": "",
+      "testScript": "",
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"name\": \"administrator\",\n  \"type\": \"admin\",\n  \"estimate\": 50,\n  \"spend\": 49\n}"
+      },
+      "requestVariables": []
+    },
+    {
+      "v": "4",
+      "endpoint": "http://localhost:8080/stores/01JB4KSGF71M1A53N61T1B6MA3/authorization-models",
+      "name": "POST: Auth Models",
+      "params": [],
+      "headers": [
+        {
+          "active": true,
+          "key": "user-id",
+          "value": "pedro"
+        },
+        {
+          "active": true,
+          "key": "x-correlation-id",
+          "value": "1234567890"
+        }
+      ],
+      "method": "POST",
+      "auth": {
+        "authType": "basic",
+        "authActive": true,
+        "username": "dev.user",
+        "password": "password"
+      },
+      "preRequestScript": "",
+      "testScript": "",
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"schemaVersion\": 1.0,\n  \"typeDefs\": {\n    \"user\": {\n      \"attributes\": {\n        \"id\": \"string\"\n      }\n    },\n    \"resource\": {\n      \"attributes\": {\n        \"path\": \"string\"\n      }\n    }\n  },\n  \"relationDefs\": {\n    \"user_can_access_resource\": {\n      \"tuple_key\": [\"user\", \"resource\"]\n    }\n  },\n  \"policies\": [\n    {\n      \"id\": \"allow_user_1_to_access_expenses\",\n      \"description\": \"Permite que o usuário 1 acesse o recurso /expenses\",\n      \"effect\": \"allow\",\n      \"actors\": {\n        \"relation\": \"equals\",\n        \"tuple\": {\n          \"user\": {\n            \"attributes\": {\n              \"id\": \"user-1\"\n            }\n          }\n        }\n      },\n      \"resources\": {\n        \"relation\": \"equals\",\n        \"tuple\": {\n          \"resource\": {\n            \"attributes\": {\n              \"path\": \"/expenses\"\n            }\n          }\n        }\n      },\n      \"actions\": [\"GET\", \"POST\", \"PUT\", \"DELETE\"]\n    },\n    {\n      \"id\": \"allow_users_1_and_9_to_access_travel\",\n      \"description\": \"Permite que os usuários 1 e 9 acessem o recurso /travel\",\n      \"effect\": \"allow\",\n      \"actors\": {\n        \"relation\": \"in\",\n        \"tuple\": {\n          \"user\": {\n            \"attributes\": {\n              \"id\": [\"user-1\", \"user-9\"]\n            }\n          }\n        }\n      },\n      \"resources\": {\n        \"relation\": \"equals\",\n        \"tuple\": {\n          \"resource\": {\n            \"attributes\": {\n              \"path\": \"/travel\"\n            }\n          }\n        }\n      },\n      \"actions\": [\"GET\", \"POST\"]\n    }\n  ]\n}"
+      },
+      "requestVariables": []
+    },
+    {
+      "v": "4",
+      "endpoint": "http://localhost:8080/stores/01JB4KSGF71M1A53N61T1B6MA3/write",
+      "name": "POST: Add Tuple",
+      "params": [],
+      "headers": [
+        {
+          "active": true,
+          "key": "user-id",
+          "value": "pedro"
+        },
+        {
+          "active": true,
+          "key": "x-correlation-id",
+          "value": "1234567890"
+        }
+      ],
+      "method": "POST",
+      "auth": {
+        "authType": "basic",
+        "authActive": true,
+        "username": "dev.user",
+        "password": "password"
+      },
+      "preRequestScript": "",
+      "testScript": "",
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"writes\": {\n    \"tuple_keys\": [\n      {\n        \"user\": \"user:foo\",\n        \"relation\": \"delete\",\n        \"object\": \"resource:/expenses/1\"\n      }\n    ]\n  },\n  \"authorization_model_id\": \"01JB4X0G1CSHPNJY0W8DPZCHF6\"\n}"
+      },
+      "requestVariables": []
+    },
+    {
+      "v": "4",
+      "endpoint": "http://localhost:8080/stores/01JB4KSGF71M1A53N61T1B6MA3/write",
+      "name": "POST: Delete Tuple",
+      "params": [],
+      "headers": [
+        {
+          "active": true,
+          "key": "user-id",
+          "value": "pedro"
+        },
+        {
+          "active": true,
+          "key": "x-correlation-id",
+          "value": "1234567890"
+        }
+      ],
+      "method": "POST",
+      "auth": {
+        "authType": "basic",
+        "authActive": true,
+        "username": "dev.user",
+        "password": "password"
+      },
+      "preRequestScript": "",
+      "testScript": "",
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"deletes\": {\n    \"tuple_keys\": [\n      {\n        \"user\": \"user:foo\",\n        \"relation\": \"delete\",\n        \"object\": \"resource:/expenses/1\"\n      }\n    ]\n  },\n  \"authorization_model_id\": \"01JB4X0G1CSHPNJY0W8DPZCHF6\"\n}"
+      },
+      "requestVariables": []
+    },
+    {
+      "v": "4",
+      "endpoint": "http://localhost:8080/stores/01JB4KSGF71M1A53N61T1B6MA3/write",
+      "name": "POST: Add Tuple Conditional",
+      "params": [],
+      "headers": [
+        {
+          "active": true,
+          "key": "user-id",
+          "value": "pedro"
+        },
+        {
+          "active": true,
+          "key": "x-correlation-id",
+          "value": "1234567890"
+        }
+      ],
+      "method": "POST",
+      "auth": {
+        "authType": "basic",
+        "authActive": true,
+        "username": "dev.user",
+        "password": "password"
+      },
+      "preRequestScript": "",
+      "testScript": "",
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"writes\": {\n    \"tuple_keys\": [\n      {\n        \"user\": \"user:bar\",\n        \"relation\": \"get\",\n        \"object\": \"resource:/expenses\",\n        \"condition\": {\n          \"name\": \"ttl\",\n          \"context\": {\n            \"expiry\": \"1795209680\"\n          }\n        }\n      }\n    ]\n  },\n  \"authorization_model_id\": \"01JD5QNR3SB7QR7XYHGDKK3CV4\"\n}"
+      },
+      "requestVariables": []
+    },
+    {
+      "v": "4",
+      "endpoint": "http://localhost:8080/stores/01JB4KSGF71M1A53N61T1B6MA3/check",
+      "name": "POST: Check Authorization",
+      "params": [],
+      "headers": [
+        {
+          "active": true,
+          "key": "user-id",
+          "value": "pedro"
+        },
+        {
+          "active": true,
+          "key": "x-correlation-id",
+          "value": "1234567890"
+        }
+      ],
+      "method": "POST",
+      "auth": {
+        "authType": "basic",
+        "authActive": true,
+        "username": "dev.user",
+        "password": "password"
+      },
+      "preRequestScript": "",
+      "testScript": "",
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"authorization_model_id\": \"01JD5QNR3SB7QR7XYHGDKK3CV4\",\n  \"tuple_key\": {\n    \"user\": \"user:user-1\",\n    \"relation\": \"get\",\n    \"object\": \"resource:/expenses\"\n  }\n}"
+      },
+      "requestVariables": []
+    },
+    {
+      "v": "4",
+      "endpoint": "http://localhost:8080/stores/01JB4KSGF71M1A53N61T1B6MA3/check",
+      "name": "POST: Check Authorization Conditional",
+      "params": [],
+      "headers": [
+        {
+          "active": true,
+          "key": "user-id",
+          "value": "pedro"
+        },
+        {
+          "active": true,
+          "key": "x-correlation-id",
+          "value": "1234567890"
+        }
+      ],
+      "method": "POST",
+      "auth": {
+        "authType": "basic",
+        "authActive": true,
+        "username": "dev.user",
+        "password": "password"
+      },
+      "preRequestScript": "",
+      "testScript": "",
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"authorization_model_id\": \"01JD5QNR3SB7QR7XYHGDKK3CV4\",\n  \"tuple_key\": {\n    \"user\": \"user:bar\",\n    \"relation\": \"get\",\n    \"object\": \"resource:/expenses\"\n  },\n  \"context\": {\n    \"current\": \"1732137680\"\n  }\n}"
+      },
+      "requestVariables": []
+    }
+  ],
+  "headers": [],
+  "auth": {
+    "authType": "none",
+    "authActive": true
+  }
+}

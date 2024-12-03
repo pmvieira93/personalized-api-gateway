@@ -1,29 +1,70 @@
 # Spring Cloud Gateway
 
+## Initializer
+
+### Docker Commands
+
+Run Service
+```bash
+docker-compose up --build -d
+```
+
+Stop Service
+```bash
+docker-compose down
+```
+
+### Setup FGA & Environment
+
+Initializer FGA Service
+```bash
+newman run fga-initializer.postman_collection.json --export-globals ./target/generated-ids.json
+```
+
+Parse IDs into `.env` file
+```bash
+jq -r '.values | map("export \(.key|sub("-";"_"; "g")|ascii_upcase)=\(.value|tostring)")|.[]' ./target/generated-ids.json > ./target/.spring-env
+```
+
+Load Env variables
+```bash
+source .spring-env
+```
+
 ## Maven Commands
 
 Run application
+```bash
+mvnw spring-boot:run
+```
 
-`mvnw spring-boot:run`
+Debug mode
+```bash
+mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+```
 
 Compile Application
-
-`mvnw clean compile`
-
+```bash
+mvnw clean compile
+```
 
 ## Test Commands
 
 ### Unit & Integration Tests
 
-`mvnw verify`
+```bash
+mvnw verify
+```
 
 Running all tests
-
-`mvnw test`
+```bash
+mvnw test
+```
 
 Running specific test class
-
-`mvnw -Dtest=RouteGatewayFilterIntegrationTest test`
+```bash
+mvnw -Dtest=RouteGatewayFilterIntegrationTest test
+```
 
 ### Manually Tests
 
